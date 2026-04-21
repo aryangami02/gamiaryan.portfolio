@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Aryan Gami | .NET Developer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#07080f;--bg2:#0d0f1a;--bg3:#121520;
+  --card:rgba(255,255,255,0.03);--border:rgba(255,255,255,0.07);
+  --cyan:#00e5ff;--orange:#ff6b35;--green:#00ff87;
+  --text:#eef2ff;--muted:#6272a4;
+  --gc:rgba(0,229,255,0.15);--go:rgba(255,107,53,0.15);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Plus Jakarta Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;cursor:none}
+::selection{background:var(--cyan);color:#000}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:linear-gradient(var(--cyan),var(--orange));border-radius:4px}
+
+/* CURSOR */
+.cdot{position:fixed;width:8px;height:8px;border-radius:50%;background:var(--cyan);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);box-shadow:0 0 12px var(--cyan),0 0 24px var(--cyan)}
+.cring{position:fixed;width:36px;height:36px;border-radius:50%;border:1.5px solid rgba(0,229,255,0.5);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .18s,height .18s,border-color .18s}
+.cring.h{width:54px;height:54px;border-color:var(--orange)}
+
+/* LOADER */
+#ld{position:fixed;inset:0;background:var(--bg);z-index:9000;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;transition:opacity .5s,visibility .5s}
+#ld.gone{opacity:0;visibility:hidden}
+.ld-logo{font-family:'Bebas Neue',sans-serif;font-size:72px;background:linear-gradient(135deg,var(--cyan),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:pp 1s ease infinite}
+@keyframes pp{0%,100%{opacity:1}50%{opacity:.3}}
+.ld-bar{width:200px;height:2px;background:rgba(255,255,255,0.08);border-radius:2px;overflow:hidden}
+.ld-fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--orange));animation:lf 1.9s ease forwards}
+@keyframes lf{from{width:0}to{width:100%}}
+
+/* PROGRESS */
+#prg{position:fixed;top:0;left:0;height:2px;width:0;z-index:900;background:linear-gradient(90deg,var(--cyan),var(--orange));transition:width .1s}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:800;padding:22px 5%;display:flex;align-items:center;justify-content:space-between;transition:all .4s}
+nav.sc{background:rgba(7,8,15,0.92);backdrop-filter:blur(20px);padding:14px 5%;border-bottom:1px solid var(--border)}
+.nlogo{font-family:'Bebas Neue',sans-serif;font-size:28px;background:linear-gradient(135deg,var(--cyan),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+.nlinks{display:flex;gap:36px;list-style:none;align-items:center}
+.nlinks a{font-size:13px;font-weight:500;color:var(--muted);text-decoration:none;position:relative;transition:color .2s}
+.nlinks a::after{content:'';position:absolute;bottom:-4px;left:0;right:0;height:1px;background:linear-gradient(90deg,var(--cyan),var(--orange));transform:scaleX(0);transition:transform .25s}
+.nlinks a:hover{color:var(--text)}
+.nlinks a:hover::after{transform:scaleX(1)}
+.nhire{padding:10px 22px;border-radius:8px;font-size:13px;font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--orange));color:#000!important;text-decoration:none;box-shadow:0 0 28px var(--gc);transition:opacity .2s,transform .2s}
+.nhire::after{display:none!important}
+.nhire:hover{opacity:.85;transform:translateY(-1px)}
+.ham{display:none;flex-direction:column;gap:5px;padding:4px;cursor:none}
+.ham span{display:block;width:24px;height:2px;background:var(--text);border-radius:2px;transition:all .3s}
+.ham.o span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.ham.o span:nth-child(2){opacity:0}
+.ham.o span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mm{display:none;position:fixed;inset:0;top:70px;background:rgba(7,8,15,0.97);backdrop-filter:blur(20px);z-index:799;flex-direction:column;align-items:center;justify-content:center;gap:42px}
+.mm.o{display:flex}
+.mm a{font-family:'Bebas Neue',sans-serif;font-size:44px;letter-spacing:2px;color:var(--text);text-decoration:none;transition:color .2s}
+.mm a:hover{color:var(--cyan)}
+
+/* ORBS */
+.orb{position:fixed;border-radius:50%;filter:blur(100px);pointer-events:none;z-index:0;animation:drift 16s ease-in-out infinite}
+.o1{width:600px;height:600px;background:rgba(0,229,255,0.05);top:-150px;left:-150px}
+.o2{width:450px;height:450px;background:rgba(255,107,53,0.05);bottom:-100px;right:-100px;animation-delay:-8s}
+.o3{width:350px;height:350px;background:rgba(0,255,135,0.03);top:40%;left:40%;animation-delay:-4s}
+@keyframes drift{0%,100%{transform:translate(0,0)}50%{transform:translate(40px,30px)}}
+
+/* HERO */
+.hero{min-height:100vh;display:flex;align-items:center;padding:130px 5% 80px;position:relative;z-index:1;max-width:1300px;margin:0 auto}
+.hero-in{display:grid;grid-template-columns:1fr 430px;gap:60px;align-items:center;width:100%}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;padding:7px 16px;border-radius:50px;border:1px solid rgba(0,229,255,0.25);background:rgba(0,229,255,0.06);font-size:11px;font-weight:600;letter-spacing:2px;color:var(--cyan);text-transform:uppercase;margin-bottom:28px;animation:fu .6s ease both}
+.ldot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:bl 1.4s infinite}
+@keyframes bl{0%,100%{opacity:1}50%{opacity:.2}}
+h1.name{font-family:'Bebas Neue',sans-serif;font-size:clamp(72px,9vw,118px);line-height:.93;letter-spacing:-1px;animation:fu .7s .1s ease both}
+h1.name .g{background:linear-gradient(135deg,var(--cyan) 30%,var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block}
+.rwrap{display:flex;align-items:center;gap:10px;margin-top:16px;animation:fu .7s .2s ease both}
+.rline{width:30px;height:2px;background:linear-gradient(90deg,var(--cyan),var(--orange))}
+.role{font-family:'Fira Code',monospace;font-size:15px;color:var(--muted)}
+#ty{color:var(--cyan)}
+.car{animation:bl 1s infinite;color:var(--orange)}
+.hdesc{margin-top:22px;font-size:16px;line-height:1.8;color:var(--muted);max-width:520px;animation:fu .7s .3s ease both}
+.hdesc strong{color:var(--text)}
+.hbtns{display:flex;gap:14px;margin-top:36px;flex-wrap:wrap;animation:fu .7s .4s ease both}
+.bcta{padding:15px 30px;border-radius:10px;font-size:14px;font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--orange));color:#000;text-decoration:none;border:none;cursor:none;box-shadow:0 0 36px var(--gc);transition:transform .2s,box-shadow .2s}
+.bcta:hover{transform:translateY(-2px);box-shadow:0 0 52px var(--gc)}
+.bgh{padding:15px 30px;border-radius:10px;font-size:14px;font-weight:600;border:1px solid var(--border);color:var(--text);text-decoration:none;transition:border-color .2s,background .2s}
+.bgh:hover{border-color:rgba(0,229,255,0.4);background:rgba(0,229,255,0.04)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:32px;animation:fu .7s .5s ease both}
+.chip{font-family:'Fira Code',monospace;font-size:10px;padding:5px 13px;border-radius:20px;border:1px solid var(--border);color:var(--muted);background:rgba(255,255,255,0.02);transition:all .2s;cursor:default}
+.chip:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,0.04)}
+
+/* CODE CARD */
+.hcard{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:28px;animation:fl .8s .3s ease both;position:relative;overflow:hidden}
+.hcard::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(0,229,255,0.04),rgba(255,107,53,0.04));pointer-events:none}
+.ctop{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.cds{display:flex;gap:7px}
+.cd{width:11px;height:11px;border-radius:50%}
+.cd1{background:#ff5f57}.cd2{background:#ffbd2e}.cd3{background:#28c840}
+.ctit{font-family:'Fira Code',monospace;font-size:10px;color:var(--muted)}
+.cb{font-family:'Fira Code',monospace;font-size:12px;line-height:1.9}
+.ln{color:#3d4466;margin-right:12px;user-select:none;font-size:10px}
+.kw{color:#ff79c6}.cl{color:#8be9fd}.st{color:#50fa7b}.cm{color:#3d4466}.fn{color:#ffb86c}.nu{color:#bd93f9}.pr{color:#f8f8f2}
+.hsr{display:flex;gap:0;margin-top:22px;border-top:1px solid var(--border);padding-top:22px}
+.hs{flex:1;text-align:center;border-right:1px solid var(--border)}
+.hs:last-child{border-right:none}
+.hsn{font-family:'Bebas Neue',sans-serif;font-size:30px;background:linear-gradient(135deg,var(--cyan),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.hsl{font-size:10px;color:var(--muted);margin-top:2px;letter-spacing:.5px}
+
+/* SECTION */
+.sec{padding:100px 5%;max-width:1300px;margin:0 auto;position:relative;z-index:1}
+.stag{font-family:'Fira Code',monospace;font-size:11px;font-weight:500;color:var(--orange);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px}
+.stit{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,5vw,64px);line-height:1;letter-spacing:-.5px;margin-bottom:14px}
+.ssub{font-size:15px;color:var(--muted);max-width:480px;line-height:1.75}
+.sep{height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);margin:0 5%;position:relative;z-index:1}
+
+/* SKILLS */
+.skl{margin-top:60px;display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:start}
+.sbars{display:flex;flex-direction:column;gap:20px}
+.sb-top{display:flex;justify-content:space-between;margin-bottom:7px}
+.sb-n{font-size:13px;font-weight:600}
+.sb-p{font-family:'Fira Code',monospace;font-size:12px;color:var(--cyan)}
+.sb-tr{height:6px;background:rgba(255,255,255,0.06);border-radius:6px;overflow:hidden}
+.sb-f{height:100%;border-radius:6px;width:0;background:linear-gradient(90deg,var(--cyan),var(--orange));transition:width 1.2s cubic-bezier(.4,0,.2,1);box-shadow:0 0 10px var(--gc)}
+.tcloud{display:flex;flex-direction:column;gap:22px}
+.tgl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--orange);margin-bottom:8px}
+.ttags{display:flex;flex-wrap:wrap;gap:8px}
+.tt{font-family:'Fira Code',monospace;font-size:11px;padding:7px 14px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);transition:all .2s;cursor:default}
+.tt:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,0.06);transform:translateY(-2px);box-shadow:0 4px 16px var(--gc)}
+
+/* EXPERIENCE */
+.expw{margin-top:60px;display:grid;grid-template-columns:200px 1fr;gap:0}
+.etabs{display:flex;flex-direction:column;border-right:1px solid var(--border)}
+.etab{padding:16px 20px;font-size:13px;font-weight:600;cursor:none;color:var(--muted);border-left:2px solid transparent;transition:all .2s;text-align:left;background:none;border-top:none;border-bottom:none;border-right:none;font-family:'Plus Jakarta Sans',sans-serif}
+.etab.a,.etab:hover{color:var(--cyan);border-left-color:var(--cyan);background:rgba(0,229,255,0.04)}
+.ep{display:none;padding:0 0 0 40px;animation:fi .3s ease}
+.ep.a{display:block}
+@keyframes fi{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.eco{font-size:12px;font-weight:600;color:var(--orange);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px}
+.erol{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:.5px;margin-bottom:10px}
+.eper{display:inline-flex;align-items:center;gap:8px;font-family:'Fira Code',monospace;font-size:11px;color:var(--muted);background:var(--bg3);border:1px solid var(--border);padding:5px 12px;border-radius:20px;margin-bottom:22px}
+.ebs{list-style:none;display:flex;flex-direction:column;gap:12px}
+.ebs li{display:flex;gap:14px;font-size:14px;color:var(--muted);line-height:1.7}
+.ebs li::before{content:'▹';color:var(--cyan);flex-shrink:0;margin-top:2px;font-size:13px}
+.ebs li strong{color:var(--text)}
+
+/* PROJECTS */
+.pg{margin-top:60px;display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:22px}
+.pc{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:30px;transition:transform .3s,border-color .3s,box-shadow .3s;position:relative;overflow:hidden;display:flex;flex-direction:column;gap:16px}
+.pc::after{content:'';position:absolute;inset:0;border-radius:18px;background:linear-gradient(135deg,rgba(0,229,255,0.06),rgba(255,107,53,0.04));opacity:0;transition:opacity .3s;pointer-events:none}
+.pc:hover{transform:translateY(-6px) rotateX(2deg);border-color:rgba(0,229,255,0.3);box-shadow:0 20px 60px rgba(0,229,255,0.08)}
+.pc:hover::after{opacity:1}
+.phead{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.pico{width:48px;height:48px;border-radius:12px;background:linear-gradient(135deg,rgba(0,229,255,0.15),rgba(255,107,53,0.1));border:1px solid rgba(0,229,255,0.2);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0}
+.pls{display:flex;gap:10px}
+.pl{width:34px;height:34px;border-radius:8px;border:1px solid var(--border);background:var(--card);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:14px;color:var(--muted);transition:all .2s}
+.pl:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,0.06)}
+.pn{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:.5px}
+.pd{font-size:13.5px;color:var(--muted);line-height:1.7}
+.pst{display:flex;flex-wrap:wrap;gap:6px}
+.ptag{font-family:'Fira Code',monospace;font-size:10px;padding:4px 10px;border-radius:20px;background:rgba(0,229,255,0.06);border:1px solid rgba(0,229,255,0.15);color:var(--cyan)}
+.pfeat{position:absolute;top:18px;right:18px;font-size:9px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:3px 10px;border-radius:20px;background:rgba(255,107,53,0.15);border:1px solid rgba(255,107,53,0.3);color:var(--orange)}
+
+/* EDUCATION */
+.eg{margin-top:60px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px}
+.ec{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:30px;transition:transform .25s,border-color .25s;position:relative;overflow:hidden}
+.ec::before{content:'';position:absolute;top:-60px;right:-60px;width:160px;height:160px;border-radius:50%;background:radial-gradient(circle,rgba(0,229,255,0.06),transparent 70%)}
+.ec:hover{transform:translateY(-4px);border-color:rgba(0,229,255,0.25)}
+.enum{font-family:'Bebas Neue',sans-serif;font-size:72px;background:linear-gradient(135deg,rgba(0,229,255,0.15),rgba(255,107,53,0.1));-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;margin-bottom:4px}
+.edeg{font-size:16px;font-weight:700;margin-bottom:4px}
+.esch{font-size:13px;color:var(--cyan);font-weight:500;margin-bottom:14px}
+.ebs2{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.ebg{font-family:'Fira Code',monospace;font-size:10px;padding:4px 10px;border-radius:20px}
+.ebg.g{background:rgba(0,255,135,0.1);border:1px solid rgba(0,255,135,0.25);color:var(--green)}
+.ebg.y{background:rgba(0,229,255,0.1);border:1px solid rgba(0,229,255,0.25);color:var(--cyan)}
+.ebg.o{background:rgba(255,107,53,0.1);border:1px solid rgba(255,107,53,0.25);color:var(--orange)}
+.etxt{font-size:13px;color:var(--muted);line-height:1.7}
+
+/* CONTACT */
+.cg{margin-top:60px;display:grid;grid-template-columns:1fr 1.4fr;gap:40px;align-items:start}
+.cl{display:flex;flex-direction:column;gap:14px}
+.ci{display:flex;align-items:center;gap:16px;background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:18px 20px;transition:border-color .2s,transform .2s;text-decoration:none}
+.ci:hover{border-color:rgba(0,229,255,0.3);transform:translateX(4px)}
+.cico{width:42px;height:42px;border-radius:10px;flex-shrink:0;background:linear-gradient(135deg,rgba(0,229,255,0.1),rgba(255,107,53,0.08));border:1px solid rgba(0,229,255,0.2);display:flex;align-items:center;justify-content:center;font-size:18px}
+.clb{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+.clv{font-size:13px;font-weight:500;color:var(--text)}
+.av{margin-top:6px;padding:18px 20px;border-radius:14px;background:rgba(0,255,135,0.04);border:1px solid rgba(0,255,135,0.15);display:flex;align-items:center;gap:12px}
+.avd{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);flex-shrink:0;animation:bl 2s infinite}
+.avt{font-size:13px;color:var(--green);font-weight:500}
+.avs{font-size:11px;color:var(--muted)}
+.cf{display:flex;flex-direction:column;gap:14px}
+.fr{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.fd{display:flex;flex-direction:column;gap:6px}
+.fd label{font-size:11px;font-weight:600;letter-spacing:.5px;color:var(--muted);text-transform:uppercase}
+.fd input,.fd textarea{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:13px 16px;font-family:'Plus Jakarta Sans',sans-serif;font-size:14px;color:var(--text);outline:none;transition:border-color .2s,box-shadow .2s;resize:none}
+.fd input:focus,.fd textarea:focus{border-color:rgba(0,229,255,0.5);box-shadow:0 0 0 3px rgba(0,229,255,0.08)}
+.fd input::placeholder,.fd textarea::placeholder{color:var(--muted);font-size:13px}
+.fsb{padding:15px;border-radius:10px;font-size:14px;font-weight:700;background:linear-gradient(135deg,var(--cyan),var(--orange));color:#000;border:none;cursor:none;font-family:'Plus Jakarta Sans',sans-serif;box-shadow:0 0 30px var(--gc);transition:opacity .2s,transform .2s}
+.fsb:hover{opacity:.88;transform:translateY(-2px)}
+.fsb:disabled{opacity:.5;transform:none}
+
+/* TOAST */
+.toast{position:fixed;bottom:30px;right:30px;z-index:9999;padding:14px 22px;border-radius:12px;font-size:14px;font-weight:500;background:var(--bg2);border:1px solid rgba(0,255,135,0.3);color:var(--green);box-shadow:0 8px 32px rgba(0,0,0,0.5);transform:translateY(80px);opacity:0;transition:all .4s cubic-bezier(.4,0,.2,1)}
+.toast.s{transform:translateY(0);opacity:1}
+
+/* BTT */
+#btt{position:fixed;bottom:30px;left:30px;z-index:800;width:44px;height:44px;border-radius:10px;border:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:18px;cursor:none;color:var(--text);opacity:0;transform:translateY(20px);transition:all .3s}
+#btt.s{opacity:1;transform:translateY(0)}
+#btt:hover{border-color:var(--cyan);color:var(--cyan);background:rgba(0,229,255,0.06)}
+
+/* FOOTER */
+footer{position:relative;z-index:1;border-top:1px solid var(--border);padding:30px 5%;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.flogo{font-family:'Bebas Neue',sans-serif;font-size:22px;background:linear-gradient(135deg,var(--cyan),var(--orange));-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-decoration:none}
+.fls{display:flex;gap:22px}
+.fls a{font-size:12px;color:var(--muted);text-decoration:none;transition:color .2s}
+.fls a:hover{color:var(--text)}
+.fcp{font-size:12px;color:var(--muted)}
+
+/* ANIMATIONS */
+@keyframes fu{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fl{from{opacity:0;transform:translateX(28px)}to{opacity:1;transform:translateX(0)}}
+.rv{opacity:0;transform:translateY(32px);transition:opacity .7s ease,transform .7s ease}
+.rv.v{opacity:1;transform:translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+  .hero-in{grid-template-columns:1fr}
+  .hcard{display:none}
+  .skl{grid-template-columns:1fr}
+  .expw{grid-template-columns:1fr}
+  .etabs{flex-direction:row;overflow-x:auto;border-right:none;border-bottom:1px solid var(--border);margin-bottom:24px}
+  .etab{border-left:none;border-bottom:2px solid transparent;white-space:nowrap}
+  .etab.a,.etab:hover{border-left:none;border-bottom-color:var(--cyan)}
+  .ep{padding:0}
+  .cg{grid-template-columns:1fr}
+  .fr{grid-template-columns:1fr}
+  .nlinks,.nhire{display:none}
+  .ham{display:flex}
+}
+@media(max-width:600px){
+  .hero{padding:110px 5% 60px}
+  .sec{padding:70px 5%}
+  .sep{margin:0}
+  footer{flex-direction:column;align-items:center;text-align:center}
+  .fls{justify-content:center}
+}
+</style>
+</head>
+<body>
+
+<div class="cdot" id="cd"></div>
+<div class="cring" id="cr"></div>
+
+<div id="ld"><div class="ld-logo">AG</div><div class="ld-bar"><div class="ld-fill"></div></div></div>
+<div id="prg"></div>
+
+<div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div>
+<div class="toast" id="toast"></div>
+<button id="btt" onclick="scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<!-- NAV -->
+<nav id="nb">
+  <a href="#" class="nlogo">AG.</a>
+  <ul class="nlinks">
+    <li><a href="#about">About</a></li>
+    <li><a href="#skills">Skills</a></li>
+    <li><a href="#experience">Experience</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#education">Education</a></li>
+    <li><a href="#contact" class="nhire">Hire Me →</a></li>
+  </ul>
+  <div class="ham" id="hm" onclick="toggleMenu()"><span></span><span></span><span></span></div>
+</nav>
+<div class="mm" id="mnu">
+  <a href="#about" onclick="cm()">About</a>
+  <a href="#skills" onclick="cm()">Skills</a>
+  <a href="#experience" onclick="cm()">Experience</a>
+  <a href="#projects" onclick="cm()">Projects</a>
+  <a href="#education" onclick="cm()">Education</a>
+  <a href="#contact" onclick="cm()">Contact</a>
+</div>
+
+<!-- HERO -->
+<div style="position:relative;z-index:1;padding:0;max-width:1300px;margin:0 auto">
+<section id="about" style="padding:0">
+<div class="hero">
+  <div class="hero-in">
+    <div>
+      <div class="eyebrow"><span class="ldot"></span>Open to Work – Full-time / Remote</div>
+      <h1 class="name">ARYAN<span class="g">GAMI</span></h1>
+      <div class="rwrap">
+        <div class="rline"></div>
+        <p class="role">&gt;&nbsp;<span id="ty"></span><span class="car">|</span></p>
+      </div>
+      <p class="hdesc">Motivated <strong>.NET Developer</strong> with 1+ year building full-stack applications using <strong>ASP.NET Core</strong>, Angular &amp; CQRS architecture. Passionate about clean code, scalable design, and continuous improvement.</p>
+      <div class="hbtns">
+        <a href="#projects" class="bcta">View My Work →</a>
+        <a href="#contact" class="bgh">Get In Touch</a>
+      </div>
+      <div class="chips">
+        <span class="chip">ASP.NET Core</span><span class="chip">C#</span><span class="chip">Angular</span><span class="chip">CQRS</span><span class="chip">SQL Server</span><span class="chip">MediatR</span>
+      </div>
+    </div>
+    <div class="hcard">
+      <div class="ctop">
+        <div class="cds"><div class="cd cd1"></div><div class="cd cd2"></div><div class="cd cd3"></div></div>
+        <span class="ctit">AryanGami.cs</span>
+      </div>
+      <div class="cb">
+        <div><span class="ln">01</span><span class="kw">public class</span> <span class="cl">AryanGami</span></div>
+        <div><span class="ln">02</span>{</div>
+        <div><span class="ln">03</span>&nbsp;&nbsp;<span class="kw">public string</span> <span class="pr">Name</span> = <span class="st">"Aryan Gami"</span>;</div>
+        <div><span class="ln">04</span>&nbsp;&nbsp;<span class="kw">public string</span> <span class="pr">Role</span> = <span class="st">".NET Developer"</span>;</div>
+        <div><span class="ln">05</span>&nbsp;&nbsp;<span class="kw">public string</span> <span class="pr">City</span> = <span class="st">"Gujarat, India"</span>;</div>
+        <div><span class="ln">06</span>&nbsp;&nbsp;<span class="cm">// Core Stack</span></div>
+        <div><span class="ln">07</span>&nbsp;&nbsp;<span class="kw">string</span>[] <span class="pr">Stack</span> = [</div>
+        <div><span class="ln">08</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="st">"ASP.NET Core"</span>,</div>
+        <div><span class="ln">09</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="st">"C# / Web API"</span>,</div>
+        <div><span class="ln">10</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="st">"Angular + TS"</span>,</div>
+        <div><span class="ln">11</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="st">"CQRS / MediatR"</span>,</div>
+        <div><span class="ln">12</span>&nbsp;&nbsp;&nbsp;&nbsp;<span class="st">"SQL Server + EF"</span></div>
+        <div><span class="ln">13</span>&nbsp;&nbsp;];</div>
+        <div><span class="ln">14</span>&nbsp;&nbsp;<span class="fn">bool</span> <span class="fn">Available</span>() =&gt; <span class="nu">true</span>;</div>
+        <div><span class="ln">15</span>}</div>
+      </div>
+      <div class="hsr">
+        <div class="hs"><div class="hsn">1+</div><div class="hsl">Yrs Exp</div></div>
+        <div class="hs"><div class="hsn">9.0</div><div class="hsl">SGPA</div></div>
+        <div class="hs"><div class="hsn">2+</div><div class="hsl">Projects</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+</div>
+
+<div class="sep"></div>
+
+<!-- SKILLS -->
+<section id="skills" class="sec">
+  <div class="rv">
+    <p class="stag">// 01 — Technical Skills</p>
+    <h2 class="stit">What I Work With</h2>
+    <p class="ssub">Proficient in building end-to-end web applications with modern .NET and frontend technologies.</p>
+  </div>
+  <div class="skl">
+    <div class="sbars rv">
+      <div><div class="sb-top"><span class="sb-n">ASP.NET Core / C#</span><span class="sb-p">88%</span></div><div class="sb-tr"><div class="sb-f" data-w="88"></div></div></div>
+      <div><div class="sb-top"><span class="sb-n">Web API / REST Design</span><span class="sb-p">85%</span></div><div class="sb-tr"><div class="sb-f" data-w="85"></div></div></div>
+      <div><div class="sb-top"><span class="sb-n">Angular / TypeScript</span><span class="sb-p">78%</span></div><div class="sb-tr"><div class="sb-f" data-w="78"></div></div></div>
+      <div><div class="sb-top"><span class="sb-n">SQL Server / EF Core</span><span class="sb-p">82%</span></div><div class="sb-tr"><div class="sb-f" data-w="82"></div></div></div>
+      <div><div class="sb-top"><span class="sb-n">CQRS / MediatR</span><span class="sb-p">75%</span></div><div class="sb-tr"><div class="sb-f" data-w="75"></div></div></div>
+      <div><div class="sb-top"><span class="sb-n">Umbraco CMS</span><span class="sb-p">72%</span></div><div class="sb-tr"><div class="sb-f" data-w="72"></div></div></div>
+    </div>
+    <div class="tcloud rv">
+      <div><p class="tgl">Backend</p><div class="ttags"><span class="tt">ASP.NET Core</span><span class="tt">C#</span><span class="tt">Web API</span><span class="tt">Entity Framework</span><span class="tt">LINQ</span><span class="tt">MediatR</span><span class="tt">CQRS</span></div></div>
+      <div><p class="tgl">Frontend</p><div class="ttags"><span class="tt">Angular</span><span class="tt">TypeScript</span><span class="tt">JavaScript</span><span class="tt">Bootstrap</span><span class="tt">HTML/CSS</span></div></div>
+      <div><p class="tgl">Database & Tools</p><div class="ttags"><span class="tt">SQL Server</span><span class="tt">Git</span><span class="tt">GitHub</span><span class="tt">Umbraco</span><span class="tt">REST APIs</span><span class="tt">OOP</span></div></div>
+      <div><p class="tgl">Soft Skills</p><div class="ttags"><span class="tt">Problem Solving</span><span class="tt">Teamwork</span><span class="tt">Code Reviews</span><span class="tt">Debugging</span></div></div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- EXPERIENCE -->
+<section id="experience" class="sec">
+  <div class="rv">
+    <p class="stag">// 02 — Work Experience</p>
+    <h2 class="stit">Where I've Worked</h2>
+    <p class="ssub">Professional hands-on experience building real-world .NET applications.</p>
+  </div>
+  <div class="expw rv">
+    <div class="etabs">
+      <button class="etab a" onclick="sw(this,'e1')">Girnar Pincho</button>
+      <button class="etab" onclick="sw(this,'e2')">Self Projects</button>
+    </div>
+    <div>
+      <div class="ep a" id="e1">
+        <p class="eco">Girnar Pincho · Ahmedabad</p>
+        <p class="erol">Dotnet Developer Trainee</p>
+        <span class="eper">📅 July 2024 – June 2025</span>
+        <ul class="ebs">
+          <li>Built full-stack applications using <strong>ASP.NET Core Web API</strong>, Angular, Entity Framework Core and SQL Server in an Agile environment.</li>
+          <li>Implemented <strong>CQRS pattern with MediatR</strong> for cleaner separation of concerns and improved backend scalability across services.</li>
+          <li>Developed RESTful APIs with proper error handling, validation middleware, and standardized response patterns.</li>
+          <li>Created and configured <strong>Umbraco CMS (V16 &amp; V17)</strong> projects — content modelling, templates, and custom data types from scratch.</li>
+          <li>Strengthened <strong>debugging, coding standards &amp; teamwork</strong> through regular code reviews with senior developers.</li>
+          <li>Optimised SQL queries and EF Core interactions to reduce redundant database calls and improve response times.</li>
+        </ul>
+      </div>
+      <div class="ep" id="e2">
+        <p class="eco">Personal Projects</p>
+        <p class="erol">Self-Driven Developer</p>
+        <span class="eper">📅 2023 – Present</span>
+        <ul class="ebs">
+          <li>Built a <strong>full-stack ECommerce platform</strong> with Angular frontend and ASP.NET Core backend featuring JWT authentication, cart and order modules.</li>
+          <li>Developed <strong>Umbraco CMS websites</strong> with custom content architecture, integrating .NET backend services and Razor templates.</li>
+          <li>Applied clean architecture — CQRS, repository pattern, dependency injection across multiple personal .NET projects.</li>
+          <li>Continuously learning new .NET features and contributing repositories on GitHub.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- PROJECTS -->
+<section id="projects" class="sec">
+  <div class="rv">
+    <p class="stag">// 03 — Projects</p>
+    <h2 class="stit">What I've Built</h2>
+    <p class="ssub">End-to-end applications built with real-world architecture and modern tech stacks.</p>
+  </div>
+  <div class="pg">
+    <div class="pc rv">
+      <span class="pfeat">Featured</span>
+      <div class="phead">
+        <div class="pico">🛒</div>
+        <div class="pls"><a href="#" class="pl">⌥</a><a href="#" class="pl">↗</a></div>
+      </div>
+      <p class="pn">ECommerce Platform</p>
+      <p class="pd">Full-stack e-commerce app with Angular frontend and ASP.NET Core Web API. Features JWT authentication, product catalogue, shopping cart and complete order management on clean CQRS architecture.</p>
+      <div class="pst"><span class="ptag">Angular</span><span class="ptag">ASP.NET Core</span><span class="ptag">CQRS</span><span class="ptag">MediatR</span><span class="ptag">SQL Server</span><span class="ptag">JWT</span><span class="ptag">EF Core</span></div>
+    </div>
+    <div class="pc rv">
+      <div class="phead">
+        <div class="pico">📰</div>
+        <div class="pls"><a href="#" class="pl">⌥</a><a href="#" class="pl">↗</a></div>
+      </div>
+      <p class="pn">Umbraco CMS (V16 & V17)</p>
+      <p class="pd">Designed and developed CMS websites using Umbraco latest versions. Built custom content types, property editors, and Razor view templates integrated with ASP.NET Core backend services.</p>
+      <div class="pst"><span class="ptag">Umbraco V16</span><span class="ptag">Umbraco V17</span><span class="ptag">ASP.NET Core</span><span class="ptag">Razor</span><span class="ptag">SQL Server</span></div>
+    </div>
+    <div class="pc rv" style="border-style:dashed;opacity:.55;align-items:center;justify-content:center;text-align:center;min-height:220px">
+      <div style="font-size:40px;margin-bottom:14px">🚀</div>
+      <p style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1px;color:var(--muted)">More Coming Soon</p>
+      <p style="font-size:12px;color:var(--muted);margin-top:6px">Currently building new projects...</p>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- EDUCATION -->
+<section id="education" class="sec">
+  <div class="rv">
+    <p class="stag">// 04 — Education</p>
+    <h2 class="stit">Academic Background</h2>
+  </div>
+  <div class="eg">
+    <div class="ec rv">
+      <div class="enum">01</div>
+      <p class="edeg">Bachelor of Computer Applications</p>
+      <p class="esch">Monark University, Ahmedabad</p>
+      <div class="ebs2"><span class="ebg g">🏆 SGPA 9.0</span><span class="ebg y">2022 – 2025</span><span class="ebg o">BCA</span></div>
+      <p class="etxt">Specialized in software development, data structures, DBMS, OOP and web technologies. Achieved SGPA of 9.0 at Radha Goswami College — top performance.</p>
+    </div>
+    <div class="ec rv">
+      <div class="enum">02</div>
+      <p class="edeg">Higher Secondary Certificate (12th)</p>
+      <p class="esch">Higher Secondary School, Surat</p>
+      <div class="ebs2"><span class="ebg g">74% — CBSE</span><span class="ebg y">2022</span><span class="ebg o">Science</span></div>
+      <p class="etxt">Completed 12th Science stream under CBSE curriculum with 74%, building a strong foundation in analytical and logical thinking.</p>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- CONTACT -->
+<section id="contact" class="sec">
+  <div class="rv">
+    <p class="stag">// 05 — Contact</p>
+    <h2 class="stit">Let's Connect</h2>
+    <p class="ssub">Looking for a motivated .NET developer? I reply within 24 hours.</p>
+  </div>
+  <div class="cg">
+    <div class="cl rv">
+      <a class="ci" href="mailto:aryan.gami@email.com">
+        <div class="cico">✉️</div>
+        <div><p class="clb">Email</p><p class="clv">aryan.gami@email.com</p></div>
+      </a>
+      <a class="ci" href="https://linkedin.com/in/aryangami" target="_blank">
+        <div class="cico">💼</div>
+        <div><p class="clb">LinkedIn</p><p class="clv">linkedin.com/in/aryangami</p></div>
+      </a>
+      <a class="ci" href="https://github.com/aryangami" target="_blank">
+        <div class="cico">🐙</div>
+        <div><p class="clb">GitHub</p><p class="clv">github.com/aryangami</p></div>
+      </a>
+      <div class="ci" style="cursor:default">
+        <div class="cico">📍</div>
+        <div><p class="clb">Location</p><p class="clv">Surat / Ahmedabad, Gujarat</p></div>
+      </div>
+      <div class="av">
+        <div class="avd"></div>
+        <div><p class="avt">Available for opportunities</p><p class="avs">Full-time · Internship · Remote</p></div>
+      </div>
+    </div>
+    <form class="cf rv" id="cform" onsubmit="sendForm(event)">
+      <div class="fr">
+        <div class="fd"><label>Your Name *</label><input type="text" name="name" placeholder="John Doe" required/></div>
+        <div class="fd"><label>Email *</label><input type="email" name="email" placeholder="john@company.com" required/></div>
+      </div>
+      <div class="fd"><label>Subject *</label><input type="text" name="subject" placeholder="Job Opportunity / Collaboration" required/></div>
+      <div class="fd"><label>Message *</label><textarea name="message" rows="5" placeholder="Hi Aryan, I'd like to discuss..." required></textarea></div>
+      <button type="submit" class="fsb" id="fsb">Send Message →</button>
+      <p style="font-size:11px;color:var(--muted);text-align:center">💡 Connect to <a href="https://formspree.io" target="_blank" style="color:var(--cyan)">Formspree.io</a> (free) to receive real emails!</p>
+    </form>
+  </div>
+</section>
+
+<footer>
+  <a href="#" class="flogo">Aryan Gami.</a>
+  <div class="fls"><a href="#about">About</a><a href="#skills">Skills</a><a href="#projects">Projects</a><a href="#contact">Contact</a></div>
+  <p class="fcp">© 2025 Aryan Gami · Made with ❤️</p>
+</footer>
+
+<script>
+// Loader
+window.addEventListener('load',()=>setTimeout(()=>document.getElementById('ld').classList.add('gone'),1900));
+
+// Cursor
+const dot=document.getElementById('cd'),ring=document.getElementById('cr');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;dot.style.left=mx+'px';dot.style.top=my+'px'});
+(function ar(){rx+=(mx-rx)*.12;ry+=(my-ry)*.12;ring.style.left=rx+'px';ring.style.top=ry+'px';requestAnimationFrame(ar)})();
+document.querySelectorAll('a,button,.etab,.tt,.chip,.pc,.ec,.ci').forEach(el=>{
+  el.addEventListener('mouseenter',()=>ring.classList.add('h'));
+  el.addEventListener('mouseleave',()=>ring.classList.remove('h'));
+});
+
+// Scroll
+const prg=document.getElementById('prg'),nb=document.getElementById('nb'),btt=document.getElementById('btt');
+window.addEventListener('scroll',()=>{
+  prg.style.width=(scrollY/(document.body.scrollHeight-innerHeight)*100)+'%';
+  nb.classList.toggle('sc',scrollY>60);
+  btt.classList.toggle('s',scrollY>400);
+});
+
+// Typed
+const roles=['.NET Developer',  'ASP.NET Core Engineer','Full-Stack Developer','Angular + .NET Builder'];
+let ri=0,ci=0,dl=false;const te=document.getElementById('ty');
+(function t(){const c=roles[ri];if(!dl){te.textContent=c.slice(0,++ci);if(ci===c.length){dl=true;setTimeout(t,2000);return}}else{te.textContent=c.slice(0,--ci);if(ci===0){dl=false;ri=(ri+1)%roles.length}}setTimeout(t,dl?42:88)})();
+
+// Reveal
+const ob=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)e.target.classList.add('v')}),{threshold:.1});
+document.querySelectorAll('.rv').forEach(el=>ob.observe(el));
+
+// Skill bars
+let ba=false;
+new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting&&!ba){ba=true;document.querySelectorAll('.sb-f').forEach(b=>setTimeout(()=>b.style.width=b.dataset.w+'%',200))}}),{threshold:.3}).observe(document.getElementById('skills'));
+
+// Exp tabs
+function sw(btn,id){
+  document.querySelectorAll('.etab').forEach(t=>t.classList.remove('a'));
+  document.querySelectorAll('.ep').forEach(p=>p.classList.remove('a'));
+  btn.classList.add('a');document.getElementById(id).classList.add('a');
+}
+
+// Mobile menu
+function toggleMenu(){document.getElementById('hm').classList.toggle('o');document.getElementById('mnu').classList.toggle('o')}
+function cm(){document.getElementById('hm').classList.remove('o');document.getElementById('mnu').classList.remove('o')}
+
+// Contact form
+function sendForm(e){
+  e.preventDefault();
+  const btn=document.getElementById('fsb');
+  btn.disabled=true;btn.textContent='Sending...';
+  setTimeout(()=>{
+    btn.disabled=false;btn.textContent='Send Message →';
+    e.target.reset();
+    const t=document.getElementById('toast');
+    t.textContent='✅ Message sent! I\'ll reply within 24 hours.';
+    t.classList.add('s');setTimeout(()=>t.classList.remove('s'),4000);
+  },1500);
+}
+
+// 3D card tilt
+document.querySelectorAll('.pc').forEach(c=>{
+  c.addEventListener('mousemove',e=>{
+    const r=c.getBoundingClientRect();
+    const x=((e.clientX-r.left)/r.width-.5)*10;
+    const y=((e.clientY-r.top)/r.height-.5)*-10;
+    c.style.transform=`translateY(-6px) rotateX(${y}deg) rotateY(${x}deg)`;
+    c.style.transition='transform .05s';
+  });
+  c.addEventListener('mouseleave',()=>{c.style.transform='';c.style.transition='transform .4s ease'});
+});
+</script>
+</body>
+</html>
